@@ -13,13 +13,14 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarStyle: Platform.select({
-          ios: {
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+      //   tabBarStyle: Platform.select({
+      //     ios: {
+      //       position: 'absolute',
+      //     },
+      //     default: {},
+      //   }),
+      }
+      }>
       <Tabs.Screen
         name="index"
         options={{
