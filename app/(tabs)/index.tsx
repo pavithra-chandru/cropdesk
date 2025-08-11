@@ -62,137 +62,137 @@ export default function HomeScreen() {
     { day: "Sun", temp: "24°C", icon: "rainy-outline" },
   ];
 
-  useEffect(() => {
-    const fetchSensorData = async () => {
-      try {
-        const res = await fetch(
-          "https://cropnowfunctionofiot-cvhne5esfxhea6es.canadacentral-01.azurewebsites.net/api/HttpTrigger1?code=TFy56B9wIpVV7pilaiKEi3fn8LfU9rQ02HGG529zexB0AzFuHa7nmw=="
-        );
-        const data = await res.json();
+  const fetchSensorData = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        "https://cropnowfunctionofiot-cvhne5esfxhea6es.canadacentral-01.azurewebsites.net/api/HttpTrigger1?code=TFy56B9wIpVV7pilaiKEi3fn8LfU9rQ02HGG529zexB0AzFuHa7nmw=="
+      );
+      const data = await res.json();
 
-        const sensorData: Sensor[] = [
-          {
-            name: "Air Quality",
-            value: data.air_quality !== null ? `${data.air_quality}%` : "--",
-            icon: "speedometer-outline",
-            color: "#74b9ff",
-          },
-          {
-            name: "Soil Moisture 1",
-            value:
-              data.soil_moisture_1 !== null ? `${data.soil_moisture_1}%` : "--",
-            icon: "water-outline",
-            color: "#81ecec",
-          },
-          {
-            name: "Soil Moisture 2",
-            value:
-              data.soil_moisture_2 !== null ? `${data.soil_moisture_2}%` : "--",
-            icon: "water-outline",
-            color: "#00cec9",
-          },
-          {
-            name: "Root Temperature",
-            value:
-              data.temperature_1 !== null ? `${data.temperature_1}°C` : "--",
-            icon: "thermometer-outline",
-            color: "#ff7675",
-          },
-          {
-            name: "Surface Temperature",
-            value:
-              data.temperature_2 !== null ? `${data.temperature_2}°C` : "--",
-            icon: "thermometer-outline",
-            color: "#fab1a0",
-          },
-          {
-            name: "UV Index",
-            value: data.uv_index !== null ? `${data.uv_index}` : "--",
-            icon: "sunny-outline",
-            color: "#ffeaa7",
-          },
-          {
-            name: "Wind Speed",
-            value: data.wind_speed !== null ? `${data.wind_speed} m/s` : "--",
-            icon: "navigate-outline",
-            color: "#a29bfe",
-          },
-          {
-            name: "Rainfall",
-            value: data.rain_ticks !== null ? `${data.rain_ticks} mm` : "--",
-            icon: "rainy-outline",
-            color: "#74b9ff",
-          },
-          {
-            name: "Wind Dir.",
-            value:
-              data.wind_direction !== null ? `${data.wind_direction}°` : "--",
-            icon: "compass-outline",
-            color: "#55efc4",
-          },
-        ];
+      const sensorData: Sensor[] = [
+        {
+          name: "Air Quality",
+          value: data.air_quality !== null ? `${data.air_quality}%` : "--",
+          icon: "speedometer-outline",
+          color: "#74b9ff",
+        },
+        {
+          name: "Soil Moisture 1",
+          value:
+            data.soil_moisture_1 !== null ? `${data.soil_moisture_1}%` : "--",
+          icon: "water-outline",
+          color: "#81ecec",
+        },
+        {
+          name: "Soil Moisture 2",
+          value:
+            data.soil_moisture_2 !== null ? `${data.soil_moisture_2}%` : "--",
+          icon: "water-outline",
+          color: "#00cec9",
+        },
+        {
+          name: "Root Temperature",
+          value:
+            data.temperature_1 !== null ? `${data.temperature_1}°C` : "--",
+          icon: "thermometer-outline",
+          color: "#ff7675",
+        },
+        {
+          name: "Surface Temperature",
+          value:
+            data.temperature_2 !== null ? `${data.temperature_2}°C` : "--",
+          icon: "thermometer-outline",
+          color: "#fab1a0",
+        },
+        {
+          name: "UV Index",
+          value: data.uv_index !== null ? `${data.uv_index}` : "--",
+          icon: "sunny-outline",
+          color: "#ffeaa7",
+        },
+        {
+          name: "Wind Speed",
+          value: data.wind_speed !== null ? `${data.wind_speed} m/s` : "--",
+          icon: "navigate-outline",
+          color: "#a29bfe",
+        },
+        {
+          name: "Rainfall",
+          value: data.rain_ticks !== null ? `${data.rain_ticks} mm` : "--",
+          icon: "rainy-outline",
+          color: "#74b9ff",
+        },
+        {
+          name: "Wind Dir.",
+          value:
+            data.wind_direction !== null ? `${data.wind_direction}°` : "--",
+          icon: "compass-outline",
+          color: "#55efc4",
+        },
+      ];
 
-        setSensors(sensorData);
+      setSensors(sensorData);
 
-        // 🧠 Generate dynamic alerts based on sensor data
-        const generatedAlerts: typeof alerts = [];
-        const now = new Date();
-        const timeLabel = `${now.getHours()}:${String(
-          now.getMinutes()
-        ).padStart(2, "0")}`;
+      const generatedAlerts: typeof alerts = [];
+      const now = new Date();
+      const timeLabel = `${now.getHours()}:${String(
+        now.getMinutes()
+      ).padStart(2, "0")}`;
 
-        if (data.soil_moisture_1 !== null && data.soil_moisture_1 < 30) {
-          generatedAlerts.push({
-            title: "Critical: Low Soil Moisture",
-            time: timeLabel,
-            description: `Soil moisture is ${data.soil_moisture_1}%. Your crops need immediate irrigation.`,
-            button: "Start Irrigation System",
-            color: "#d32f2f",
-            icon: "flame-outline",
-          });
-        }
-
-        if (data.uv_index !== null && data.uv_index > 7) {
-          generatedAlerts.push({
-            title: "High UV Index",
-            time: timeLabel,
-            description: `UV Index is ${data.uv_index}. Cover sensitive crops.`,
-            button: "Add UV Protection",
-            color: "#f57c00",
-            icon: "sunny-outline",
-          });
-        }
-
-        if (data.rain_ticks !== null && data.rain_ticks > 15) {
-          generatedAlerts.push({
-            title: "Heavy Rainfall Detected",
-            time: timeLabel,
-            description: `Rainfall is ${data.rain_ticks} mm. Flooding risk possible.`,
-            button: "Check Drainage",
-            color: "#1976d2",
-            icon: "rainy-outline",
-          });
-        }
-
-        if (data.air_quality !== null && data.air_quality < 40) {
-          generatedAlerts.push({
-            title: "Poor Air Quality",
-            time: timeLabel,
-            description: `Air quality dropped to ${data.air_quality}%. Sensitive crops may be affected.`,
-            button: "Install Air Filter",
-            color: "#6a1b9a",
-            icon: "speedometer-outline",
-          });
-        }
-
-        setAlerts(generatedAlerts);
-      } catch (error) {
-        console.error("Failed to fetch sensor data:", error);
-      } finally {
-        setLoading(false);
+      if (data.soil_moisture_1 !== null && data.soil_moisture_1 < 30) {
+        generatedAlerts.push({
+          title: "Critical: Low Soil Moisture",
+          time: timeLabel,
+          description: `Soil moisture is ${data.soil_moisture_1}%. Your crops need immediate irrigation.`,
+          button: "Start Irrigation System",
+          color: "#d32f2f",
+          icon: "flame-outline",
+        });
       }
-    };
 
+      if (data.uv_index !== null && data.uv_index > 7) {
+        generatedAlerts.push({
+          title: "High UV Index",
+          time: timeLabel,
+          description: `UV Index is ${data.uv_index}. Cover sensitive crops.`,
+          button: "Add UV Protection",
+          color: "#f57c00",
+          icon: "sunny-outline",
+        });
+      }
+
+      if (data.rain_ticks !== null && data.rain_ticks > 15) {
+        generatedAlerts.push({
+          title: "Heavy Rainfall Detected",
+          time: timeLabel,
+          description: `Rainfall is ${data.rain_ticks} mm. Flooding risk possible.`,
+          button: "Check Drainage",
+          color: "#1976d2",
+          icon: "rainy-outline",
+        });
+      }
+
+      if (data.air_quality !== null && data.air_quality < 40) {
+        generatedAlerts.push({
+          title: "Poor Air Quality",
+          time: timeLabel,
+          description: `Air quality dropped to ${data.air_quality}%. Sensitive crops may be affected.`,
+          button: "Install Air Filter",
+          color: "#6a1b9a",
+          icon: "speedometer-outline",
+        });
+      }
+
+      setAlerts(generatedAlerts);
+    } catch (error) {
+      console.error("Failed to fetch sensor data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchSensorData();
   }, []);
 
@@ -217,7 +217,12 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.headerRow}>
           <Text style={styles.greeting}>Hi! Ramesh,</Text>
-          <Ionicons name="notifications-outline" size={24} color="#fff" />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TouchableOpacity onPress={fetchSensorData} style={{ marginRight: 16 }}>
+              <Ionicons name="refresh-outline" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Ionicons name="notifications-outline" size={24} color="#fff" />
+          </View>
         </View>
 
         {/* Static Alert Box */}
@@ -249,7 +254,7 @@ export default function HomeScreen() {
           >
             {forecast.map((item, index) => (
               <View key={index} style={styles.hourlyItem}>
-                <Ionicons name={item.icon} size={24} color="#fff" />
+                <Ionicons name={item.icon as IoniconName} size={24} color="#fff" />
                 <Text style={styles.hourlyTime}>{item.day}</Text>
                 <Text style={styles.hourlyTemp}>{item.temp}</Text>
               </View>
@@ -398,8 +403,6 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  // ...your previous styles...
-  // container: {  backgroundColor: "#111", paddingTop: 48 },
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",

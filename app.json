@@ -17,7 +17,11 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.aakashetty.CropDesk"
+      "package": "com.aakashetty.CropDesk",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -46,6 +50,12 @@
       "eas": {
         "projectId": "afe856f3-9ba7-4a09-80b5-0854f1046a16"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/afe856f3-9ba7-4a09-80b5-0854f1046a16"
     }
   }
 }
